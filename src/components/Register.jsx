@@ -290,8 +290,8 @@ const validatePhone = (phone) => {
 };
 
 const validatePin = (pin) => {
-  const pinRegex = /^[1-9]{1}[0-9]{2}\\s{0, 1}[0-9]{3}$/;
-  return pinRegex.test(pin);
+  let regex = new RegExp(/^[1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}$/);
+  return regex.test(pin);
 };
 
 const Register = () => {
@@ -361,7 +361,7 @@ const Register = () => {
     } else {
       setStateNameError(false);
     }
-    // if (!pin) {
+    // if (!pin || pin.length === 6 || pin === NaN) {
     //   setPinError(true);
     // } else {
     //   setPinError(false);
@@ -384,12 +384,11 @@ const Register = () => {
     if (!pin) {
       setPinError(true);
     } else {
-      if (validatePin(pin)) {
+      if (!validatePin(pin)) {
         setPinError(true);
-        console.log(pin);
       } else {
         setPinError(false);
-        // do something with the data
+        console.log(phone); // do something with the data
       }
     }
 
@@ -611,7 +610,7 @@ const Register = () => {
                 <InputWrapper
                   variant="filled"
                   color="success"
-                  type="pin"
+                  type="postal"
                   // inputProps={{
                   //   maxLength: 6,
                   //   // style: { textAlign: "center" },
