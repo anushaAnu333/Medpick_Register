@@ -25,59 +25,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { postRegister } from "../Redux/data/action";
 
-const FormWrapper = styled(Box)(({ theme }) => ({
-  display: "flex",
-  gap: "60px",
-  // marginTop:'70px',
-  justifyContent: "center",
-
-  [theme.breakpoints.down("xl")]: {
-    flexDirection: "row",
-    gap: "50px",
-  },
-  [theme.breakpoints.down("lg")]: {
-    flexDirection: "row",
-    gap: "50px",
-  },
-  [theme.breakpoints.down("md")]: {
-    flexDirection: "column",
-    gap: "10px",
-  },
-  [theme.breakpoints.down("sm")]: {
-    flexDirection: "column",
-
-    gap: "10px",
-  },
-  [theme.breakpoints.down("xs")]: {
-    flexDirection: "column",
-    gap: "10px",
-  },
-}));
-
 const Wrapper = styled(Box)(({ theme }) => ({
-  [theme.breakpoints.down("xl")]: {
-    // flexDirection:'row',
-    // gap:'50px',
-    width: "1240px",
-    height: "984px",
-  },
-  [theme.breakpoints.down("lg")]: {
-    // flexDirection:'row',
-    // gap:'50px',
-  },
-  [theme.breakpoints.down("md")]: {
-    // flexDirection:'column',
-    // gap:'10px',
-  },
-  [theme.breakpoints.down("sm")]: {
-    flexDirection: "column",
-
-    gap: "10px",
-  },
-  [theme.breakpoints.down("xs")]: {
-    // flexDirection:'column',
-    // gap:'10px',
-  },
   [theme.breakpoints.down("md")]: {
     width: "480px",
     height: "1159px",
@@ -152,7 +100,7 @@ const InputWrapper = styled(OutlinedInput)(({ theme }) => ({
     width: "330px",
     height: "56px",
     alignItems: "center",
-
+    padding: "2%",
     fontSize: "14px",
     fontFamily: "Poppins",
     display: "flex",
@@ -341,6 +289,11 @@ const validatePhone = (phone) => {
   return phoneRegex.test(phone);
 };
 
+const validatePin = (pin) => {
+  const pinRegex = /^[1-9]{1}[0-9]{2}\\s{0, 1}[0-9]{3}$/;
+  return pinRegex.test(pin);
+};
+
 const Register = () => {
   const data = useSelector((store) => store.data.data);
   const dispatch = useDispatch();
@@ -377,14 +330,23 @@ const Register = () => {
   const handleChange = (e) => {
     setHospitalType(e.target.value);
   };
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState("");
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!hospitalName || hospitalName.length < 3) {
-      setHospitalNameError(true);
+    if (!name && name < 3) {
+      // The name is valid
+      setNameError(true);
     } else {
-      setHospitalNameError(false);
+      // The name is invalid
+      setNameError(false);
     }
-    if (!cityName || cityName.length < 3) {
+    // if (!hospitalName || hospitalName.length < 3) {
+    //   setHospitalNameError(true);
+    // } else {
+
+    // }
+    if (!validateName(cityName)) {
       setCityNameError(true);
     } else {
       setCityNameError(false);
@@ -394,16 +356,16 @@ const Register = () => {
     } else {
       setHospitalTypeError(false);
     }
-    if (!stateName || stateName.length < 3) {
+    if (!validateName(stateName)) {
       setStateNameError(true);
     } else {
       setStateNameError(false);
     }
-    if (!pin) {
-      setPinError(true);
-    } else {
-      setPinError(false);
-    }
+    // if (!pin) {
+    //   setPinError(true);
+    // } else {
+    //   setPinError(false);
+    // }
     if (!address || address.length < 3) {
       setAddressError(true);
     } else {
@@ -419,9 +381,20 @@ const Register = () => {
         console.log(phone); // do something with the data
       }
     }
+    if (!pin) {
+      setPinError(true);
+    } else {
+      if (validatePin(pin)) {
+        setPinError(true);
+        console.log(pin);
+      } else {
+        setPinError(false);
+        // do something with the data
+      }
+    }
 
     if (
-      hospitalName &&
+      name &&
       cityName &&
       stateName &&
       phone &&
@@ -430,17 +403,22 @@ const Register = () => {
       hospitalType
     ) {
       let postData = {
-        hospitalName: hospitalName,
-        cityName: cityName,
-        hospitalType: hospitalType,
-        stateName: stateName,
-        phone: phone,
-        pin: pin,
+        userid: "OyZFId9xjXNrPvynAGW6JiZutZo2",
+
+        hospid: "abcdhospid",
+        username: name,
+        city: cityName,
+        hosptype: hospitalType,
+        state: stateName,
+        mobile: phone,
+        zip: pin,
         address: address,
       };
-      setOpen(true);
+      // setOpen(true);
       dispatch(postRegister(postData));
-      console.log(postData);
+      console.log("postData", postData);
+    } else {
+      // setOpen(false);
     }
   };
 
@@ -500,14 +478,14 @@ const Register = () => {
                   color="success"
                   focused
                   type="text"
-                  value={hospitalName}
-                  onChange={(event) => setHospitalName(event.target.value)}
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
                   sx={{
                     bgcolor: "rgba(23, 70, 162, 0.05)",
                     "& fieldset": { border: "none" },
                   }}
                 />
-                {hospitalNameError && (
+                {nameError && (
                   <FormHelperText sx={{ color: "red" }}>
                     Please enter a valid hospital name
                   </FormHelperText>
@@ -634,10 +612,10 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   type="pin"
-                  inputProps={{
-                    maxLength: 6,
-                    // style: { textAlign: "center" },
-                  }}
+                  // inputProps={{
+                  //   maxLength: 6,
+                  //   // style: { textAlign: "center" },
+                  // }}
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
                   focused

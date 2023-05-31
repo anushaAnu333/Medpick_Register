@@ -27,12 +27,12 @@ export const postRegister = (data) => (dispatch) => {
   dispatch(postRegisterRequest());
   return axios({
     method: "POST",
-    url: " http://localhost:3004/data",
+    url: " https://api.medpick.in/vajra/users/updateprofile",
     data,
   })
     .then((res) => {
+      console.log("res", res.data);
       dispatch(postRegisterSuccess(res.data));
-      console.log(data);
     })
     .catch((error) => {
       dispatch(postRegisterFailure(error));
