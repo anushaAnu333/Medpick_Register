@@ -8,8 +8,7 @@ import { ThemeProvider } from "@emotion/react";
 import { BrowserRouter } from "react-router-dom";
 import { unstable_createMuiStrictModeTheme } from "@mui/material/styles";
 import { store } from "./Redux/store";
-
-const theme = unstable_createMuiStrictModeTheme();
+import theme from "./Theme";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

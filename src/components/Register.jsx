@@ -18,13 +18,71 @@ import google from "../images/google.png";
 import apple from "../images/apple.png";
 import { useTheme } from "@emotion/react";
 import { styled } from "@mui/material/styles";
-import { OutputOutlined } from "@mui/icons-material";
-import validator from "validator";
+
+import { useDispatch } from "react-redux";
+
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { postRegister } from "../Redux/data/action";
+
+const FormWrapper = styled(Box)(({ theme }) => ({
+  display: "flex",
+  gap: "60px",
+  // marginTop:'70px',
+  justifyContent: "center",
+
+  [theme.breakpoints.down("xl")]: {
+    flexDirection: "row",
+    gap: "50px",
+  },
+  [theme.breakpoints.down("lg")]: {
+    flexDirection: "row",
+    gap: "50px",
+  },
+  [theme.breakpoints.down("md")]: {
+    flexDirection: "column",
+    gap: "10px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
+
+    gap: "10px",
+  },
+  [theme.breakpoints.down("xs")]: {
+    flexDirection: "column",
+    gap: "10px",
+  },
+}));
+
 const Wrapper = styled(Box)(({ theme }) => ({
+  [theme.breakpoints.down("xl")]: {
+    // flexDirection:'row',
+    // gap:'50px',
+    width: "1240px",
+    height: "984px",
+  },
+  [theme.breakpoints.down("lg")]: {
+    // flexDirection:'row',
+    // gap:'50px',
+  },
+  [theme.breakpoints.down("md")]: {
+    // flexDirection:'column',
+    // gap:'10px',
+  },
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
+
+    gap: "10px",
+  },
+  [theme.breakpoints.down("xs")]: {
+    // flexDirection:'column',
+    // gap:'10px',
+  },
   [theme.breakpoints.down("md")]: {
     width: "480px",
     height: "1159px",
-    // border: "1px solid yellow",
+    border: "1px solid yellow",
+    padding: "2px",
     fontSize: "14px",
     fontFamily: "Poppins",
   },
@@ -34,7 +92,7 @@ const Wrapper = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.up("lg")]: {
     width: "1240px",
-    height: "904px",
+    height: "984px",
   },
 }));
 const StackWrapper = styled(Stack)(({ theme }) => ({
@@ -171,8 +229,6 @@ const Text = styled(Typography)(({ theme }) => ({
   color: " #212427",
   fontWeight: 500,
 
-  fontFamily: "Poppins",
-  fontStyle: "normal",
   [theme.breakpoints.down("md")]: {
     fontSize: "16px",
   },
@@ -189,8 +245,6 @@ const FormText = styled(Typography)(({ theme }) => ({
   color: " #1746A2",
   fontWeight: 400,
 
-  fontFamily: "Poppins",
-  fontStyle: "normal",
   [theme.breakpoints.down("md")]: {
     fontSize: "16px",
   },
@@ -202,14 +256,18 @@ const FormText = styled(Typography)(({ theme }) => ({
   },
 }));
 const ButtonWrapper = styled(Button)(({ theme }) => ({
-  textAlign: "start",
   color: " white",
   fontWeight: 400,
 
-  fontFamily: "Poppins",
-  fontStyle: "normal",
+  margin: "auto",
+
+  borderRadius: "40px",
+  bgcolor: "red",
+  transform: "none",
   [theme.breakpoints.down("md")]: {
     fontSize: "16px",
+    width: "260px",
+    height: "46px",
   },
   [theme.breakpoints.down("sm")]: {
     fontSize: "14px",
@@ -219,23 +277,60 @@ const ButtonWrapper = styled(Button)(({ theme }) => ({
   },
   [theme.breakpoints.up("lg")]: {
     fontSize: "20px",
+    width: "300px",
+    height: "60px",
   },
 }));
-
-const names = ["Super Speciaity", "Multi Speciaity", "Others"];
-const style = {
+const ModalWrapper = styled(Box)(({ theme }) => ({
+  border: "2px solid rgba(255, 111, 0, 0.5)",
+  boxShadow: 24,
+  borderRadius: "30px",
+  p: 4,
+  textAlign: "center",
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "861px",
-  height: "385px",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4,
-  textAlign: "center",
-};
+  backgroundColor: "white",
+
+  [theme.breakpoints.down("md")]: {
+    fontSize: "14px",
+    width: "370px",
+    height: "370px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "12px",
+    width: "370px",
+    height: "310px",
+  },
+  [theme.breakpoints.up("lg")]: {
+    fontSize: "16px",
+    width: "861px",
+    height: "385px",
+  },
+}));
+
+const ModalButton = styled(Button)(({ theme }) => ({
+  background: "#1746A2",
+  borderRadius: "40px",
+  color: "white",
+  [theme.breakpoints.down("md")]: {
+    fontSize: "14px",
+    width: "200px",
+    height: "46px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "12px",
+    width: "180px",
+    height: "46px",
+  },
+  [theme.breakpoints.up("lg")]: {
+    fontSize: "16px",
+    width: "217px",
+    height: "58px",
+  },
+}));
+
 const validateName = (name) => {
   const nameRegex = /^[a-z ,.'-]+$/i;
   return nameRegex.test(name);
@@ -245,7 +340,12 @@ const validatePhone = (phone) => {
   const phoneRegex = /^\+?[0-9]{10}$/;
   return phoneRegex.test(phone);
 };
+
 const Register = () => {
+  const data = useSelector((store) => store.data.data);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const margin = { marginTop: "50%" };
@@ -319,6 +419,29 @@ const Register = () => {
         console.log(phone); // do something with the data
       }
     }
+
+    if (
+      hospitalName &&
+      cityName &&
+      stateName &&
+      phone &&
+      address &&
+      pin &&
+      hospitalType
+    ) {
+      let postData = {
+        hospitalName: hospitalName,
+        cityName: cityName,
+        hospitalType: hospitalType,
+        stateName: stateName,
+        phone: phone,
+        pin: pin,
+        address: address,
+      };
+      setOpen(true);
+      dispatch(postRegister(postData));
+      console.log(postData);
+    }
   };
 
   return (
@@ -346,7 +469,7 @@ const Register = () => {
             borderRadius: "60px",
           }}>
           <Heading>Register</Heading>
-          <Text>
+          <Text sx={{ marginTop: "2%" }}>
             Please enter the Hospital information, then use the{" "}
             <span style={{ color: "#FF731D" }}>services. </span>
           </Text>
@@ -373,14 +496,15 @@ const Register = () => {
                 <FormText>Hospital Name</FormText>
                 <InputWrapper
                   variant="filled"
+                  autoComplete="on"
                   color="success"
                   focused
+                  type="text"
                   value={hospitalName}
                   onChange={(event) => setHospitalName(event.target.value)}
                   sx={{
-                    width: "400px",
-                    height: "60px",
                     bgcolor: "rgba(23, 70, 162, 0.05)",
+                    "& fieldset": { border: "none" },
                   }}
                 />
                 {hospitalNameError && (
@@ -395,12 +519,12 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   focused
+                  type="type"
                   value={cityName}
                   onChange={(e) => setCityName(e.target.value)}
                   sx={{
-                    width: "400px",
-                    height: "60px",
                     bgcolor: "rgba(23, 70, 162, 0.05)",
+                    "& fieldset": { border: "none" },
                   }}
                 />
                 {cityNameError && (
@@ -417,18 +541,37 @@ const Register = () => {
               <FormControl>
                 <FormText>Hospital Type</FormText>
                 <FormControl>
-                  <InputLabel id="demo-simple-select-label">
+                  <InputLabel
+                    id="demo-simple-select-label"
+                    sx={{
+                      marginTop: "2%",
+                      color: "#1746A2",
+                      fontWeight: "400",
+                    }}>
                     Hospital type
                   </InputLabel>
                   <SelectWrapper
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
+                    sx={{
+                      bgcolor: "rgba(23, 70, 162, 0.05)",
+                      "& fieldset": { border: "none" },
+                      border: "1px solid rgba(23, 70, 162, 0.2)",
+                    }}
                     value={hospitalType}
                     label="Age"
+                    type="text"
                     onChange={handleChange}>
-                    <MenuItem value={10}>Super Speciaity</MenuItem>
-                    <MenuItem value={20}>Multi Speciaity</MenuItem>
-                    <MenuItem value={30}>Others</MenuItem>
+                    <MenuItem value={""} sx={{ color: "#FF731D" }}>
+                      Clinic
+                    </MenuItem>
+                    <MenuItem value={"Super Speciaity"}>
+                      Super Speciaity
+                    </MenuItem>
+                    <MenuItem value={"Multi Speciaity"}>
+                      Multi Speciaity
+                    </MenuItem>
+                    <MenuItem value={"Others"}>Others</MenuItem>
                   </SelectWrapper>
 
                   {hospitalTypeError && (
@@ -446,11 +589,11 @@ const Register = () => {
                   color="success"
                   focused
                   value={stateName}
+                  type="text"
                   onChange={(e) => setStateName(e.target.value)}
                   sx={{
-                    width: "400px",
-                    height: "60px",
                     bgcolor: "rgba(23, 70, 162, 0.05)",
+                    "& fieldset": { border: "none" },
                   }}
                 />
                 {stateNameError && (
@@ -471,12 +614,12 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   focused
+                  type="tel"
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
                   sx={{
-                    width: "400px",
-                    height: "60px",
                     bgcolor: "rgba(23, 70, 162, 0.05)",
+                    "& fieldset": { border: "none" },
                   }}
                 />
                 {phoneError && (
@@ -491,13 +634,16 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   type="pin"
+                  inputProps={{
+                    maxLength: 6,
+                    // style: { textAlign: "center" },
+                  }}
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
                   focused
                   sx={{
-                    width: "400px",
-                    height: "60px",
                     bgcolor: "rgba(23, 70, 162, 0.05)",
+                    "& fieldset": { border: "none" },
                   }}
                 />
                 {pinError && (
@@ -515,11 +661,14 @@ const Register = () => {
                   color="success"
                   value={address}
                   placeholder="Enter Your Text"
+                  multiline
+                  rowsMax={4}
                   inputProps={{
                     sx: {
                       "&::placeholder": {
                         opacity: 1,
                         alignItems: "start",
+                        color: "grey",
                       },
                     },
                   }}
@@ -543,29 +692,28 @@ const Register = () => {
               }}>
               <ButtonWrapper
                 variant="contained"
-                // onClick={handleOpen}
+                sx={{ bgcolor: "#1746A2" }}
                 onClick={handleSubmit}
-                sx={{
-                  margin: "auto",
-                  width: "300px",
-                  height: "60px",
-                  borderRadius: "40px",
-                  bgcolor: "#1746A2",
-                  transform: "none",
-                }}>
+                // onClick={() => setOpen(true)}
+              >
                 Submit
               </ButtonWrapper>
               <Modal
                 open={open}
                 onClose={handleClose}
+                sx={{
+                  backdropFilter: "blur(5px)",
+                  //other styles here
+                }}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">
-                <Box sx={style}>
+                <ModalWrapper sx={{ padding: "2%" }}>
                   <Typography
                     id="modal-modal-title"
                     variant="h6"
                     component="h2"
-                    color="#008D6F">
+                    color="#008D6F"
+                    marginTop="4%">
                     “Successfully Submitted”
                   </Typography>
                   <Typography id="modal-modal-description" sx={{ mt: 2 }}>
@@ -573,23 +721,18 @@ const Register = () => {
                     will be activated after verification. If you have any query,
                     Call or WhatsApp +91-89715-80265
                   </Typography>
-                  <Typography sx={{ marginTop: " 60px", color: " #1746A2" }}>
+                  <Typography
+                    sx={{
+                      marginTop: " 40px",
+                      color: " #1746A2",
+                      marginBottom: "2%",
+                    }}>
                     Thank you
                   </Typography>
-                  <Button
-                    variant="contained"
-                    onClick={handleClose}
-                    sx={{
-                      margin: "auto",
-                      width: "217px",
-                      height: "55px",
-                      borderRadius: "40px",
-                      bgcolor: "#1746A2",
-                      marginTop: " 60px",
-                    }}>
+                  <ModalButton variant="contained" onClick={handleClose}>
                     Done
-                  </Button>
-                </Box>
+                  </ModalButton>
+                </ModalWrapper>
               </Modal>
             </Box>
           </Box>

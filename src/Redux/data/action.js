@@ -23,14 +23,16 @@ const postRegisterFailure = () => {
 };
 
 export const postRegister = (data) => (dispatch) => {
+  console.log("data", data);
   dispatch(postRegisterRequest());
   return axios({
     method: "POST",
-    url: "",
+    url: " http://localhost:3004/data",
     data,
   })
     .then((res) => {
       dispatch(postRegisterSuccess(res.data));
+      console.log(data);
     })
     .catch((error) => {
       dispatch(postRegisterFailure(error));

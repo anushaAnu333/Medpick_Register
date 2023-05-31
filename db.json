@@ -1,0 +1,34 @@
+{
+  "data": [
+    {
+      "hospitalName": "aaaa",
+      "cityName": "aaaa",
+      "hospitalType": "Super Speciaity",
+      "stateName": "aaaa",
+      "phone": "9497153064",
+      "pin": "123456",
+      "address": "asasdsad\nsdasd\ndfds\ndfd",
+      "id": 1
+    },
+    {
+      "hospitalName": "aaaaa",
+      "cityName": "aaaa",
+      "hospitalType": "Multi Speciaity",
+      "stateName": "aaaa",
+      "phone": "123456787",
+      "pin": "123445",
+      "address": "sdsadsada",
+      "id": 2
+    },
+    {
+      "hospitalName": "ansdsd",
+      "cityName": "asasad",
+      "hospitalType": "Multi Speciaity",
+      "stateName": "asadsd",
+      "phone": "12345678",
+      "pin": "123456",
+      "address": "24sfdsfdsdf",
+      "id": 3
+    }
+  ]
+}
