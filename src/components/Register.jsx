@@ -2,7 +2,9 @@ import {
   Box,
   Button,
   FormControl,
+  FormHelperText,
   InputAdornment,
+  InputLabel,
   MenuItem,
   Modal,
   OutlinedInput,
@@ -234,7 +236,15 @@ const style = {
   p: 4,
   textAlign: "center",
 };
+const validateName = (name) => {
+  const nameRegex = /^[a-z ,.'-]+$/i;
+  return nameRegex.test(name);
+};
 
+const validatePhone = (phone) => {
+  const phoneRegex = /^\+?[0-9]{10}$/;
+  return phoneRegex.test(phone);
+};
 const Register = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
@@ -242,66 +252,75 @@ const Register = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
   const [hospitalName, setHospitalName] = useState("");
+  const [hospitalNameError, setHospitalNameError] = useState(false);
+
   const [cityName, setCityName] = useState("");
+  const [cityNameError, setCityNameError] = useState(false);
+
   const [hospitalType, setHospitalType] = useState("");
+  const [hospitalTypeError, setHospitalTypeError] = useState(false);
+
   const [stateName, setStateName] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [stateNameError, setStateNameError] = useState(false);
+
   const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState(false);
+
   const [address, setAddress] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [isError, setIsError] = useState(false);
-  const handleClick = () => {
-    let data = {
-      hospitalName: hospitalName,
-      cityName: cityName,
-      hospitalType: hospitalType,
-      mobileNumber: mobileNumber,
-      stateName: stateName,
-      pin: pin,
-      address: address,
-    };
-    console.log(data);
-    let nameFlag = false;
-    if (
-      validator.isStrongPassword(hospitalName, {
-        minLength: 3,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 0,
-        minSymbols: 0,
-      })
-    ) {
-      setNameError("");
-      nameFlag = true;
+  const [addressError, setAddressError] = useState(false);
+
+  const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState(false);
+
+  const handleChange = (e) => {
+    setHospitalType(e.target.value);
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!hospitalName || hospitalName.length < 3) {
+      setHospitalNameError(true);
     } else {
-      setNameError("Enter valid name");
+      setHospitalNameError(false);
     }
-    console.log(nameFlag);
-  };
-
-  const [personName, setPersonName] = React.useState([]);
-
-  const handleNum = (e) => {
-    let nameFlag = false;
-    setMobileNumber(e.target.value);
-    if (e.target.value.length > 10) {
-      setIsError("");
-      nameFlag = true;
+    if (!cityName || cityName.length < 3) {
+      setCityNameError(true);
     } else {
-      setIsError("wrong");
+      setCityNameError(false);
+    }
+    if (!hospitalType) {
+      setHospitalTypeError(true);
+    } else {
+      setHospitalTypeError(false);
+    }
+    if (!stateName || stateName.length < 3) {
+      setStateNameError(true);
+    } else {
+      setStateNameError(false);
+    }
+    if (!pin) {
+      setPinError(true);
+    } else {
+      setPinError(false);
+    }
+    if (!address || address.length < 3) {
+      setAddressError(true);
+    } else {
+      setAddressError(false);
+    }
+    if (!phone) {
+      setPhoneError(true);
+    } else {
+      if (!validatePhone(phone)) {
+        setPhoneError(true);
+      } else {
+        setPhoneError(false);
+        console.log(phone); // do something with the data
+      }
     }
   };
 
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
   return (
     <>
       {/* <Navbar /> */}
@@ -357,14 +376,18 @@ const Register = () => {
                   color="success"
                   focused
                   value={hospitalName}
-                  onChange={(e) => setHospitalName(e.target.value)}
+                  onChange={(event) => setHospitalName(event.target.value)}
                   sx={{
                     width: "400px",
                     height: "60px",
                     bgcolor: "rgba(23, 70, 162, 0.05)",
                   }}
                 />
-                <Typography sx={{ color: "red" }}>{nameError}</Typography>
+                {hospitalNameError && (
+                  <FormHelperText sx={{ color: "red" }}>
+                    Please enter a valid hospital name
+                  </FormHelperText>
+                )}
               </FormControl>
               <FormControl>
                 <FormText>City</FormText>
@@ -372,6 +395,7 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   focused
+                  value={cityName}
                   onChange={(e) => setCityName(e.target.value)}
                   sx={{
                     width: "400px",
@@ -379,6 +403,11 @@ const Register = () => {
                     bgcolor: "rgba(23, 70, 162, 0.05)",
                   }}
                 />
+                {cityNameError && (
+                  <FormHelperText sx={{ color: "red" }}>
+                    Please enter a valid city
+                  </FormHelperText>
+                )}
               </FormControl>
             </StackWrapper>
             <StackWrapper
@@ -387,40 +416,36 @@ const Register = () => {
               spacing={{ xs: 1, sm: 2, md: 8 }}>
               <FormControl>
                 <FormText>Hospital Type</FormText>
-                <SelectWrapper
-                  multiple
-                  displayEmpty
-                  sx={{ color: " #1746A2", fontFamily: "Poppins" }}
-                  value={personName}
-                  // onChange={handleChange}
-                  onChange={(e) => setHospitalType(e.target.value)}
-                  input={<OutlinedInput />}
-                  renderValue={(selected) => {
-                    if (selected.length === 0) {
-                      return <Typography>Hospital Type</Typography>;
-                    }
+                <FormControl>
+                  <InputLabel id="demo-simple-select-label">
+                    Hospital type
+                  </InputLabel>
+                  <SelectWrapper
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={hospitalType}
+                    label="Age"
+                    onChange={handleChange}>
+                    <MenuItem value={10}>Super Speciaity</MenuItem>
+                    <MenuItem value={20}>Multi Speciaity</MenuItem>
+                    <MenuItem value={30}>Others</MenuItem>
+                  </SelectWrapper>
 
-                    return selected.join(", ");
-                  }}
-                  inputProps={{ "aria-label": "Without label" }}>
-                  <MenuItem>
-                    <Text sx={{ fontSize: "16px", color: "#FF731D" }}>
-                      Clinic
-                    </Text>
-                  </MenuItem>
-                  {names.map((name) => (
-                    <MenuItem sx={{ fontSize: "16px" }} key={name} value={name}>
-                      {name}
-                    </MenuItem>
-                  ))}
-                </SelectWrapper>
+                  {hospitalTypeError && (
+                    <FormHelperText sx={{ color: "red" }}>
+                      Please select hospital type
+                    </FormHelperText>
+                  )}
+                </FormControl>
               </FormControl>
+
               <FormControl>
                 <FormText>State</FormText>
                 <InputWrapper
                   variant="filled"
                   color="success"
                   focused
+                  value={stateName}
                   onChange={(e) => setStateName(e.target.value)}
                   sx={{
                     width: "400px",
@@ -428,8 +453,14 @@ const Register = () => {
                     bgcolor: "rgba(23, 70, 162, 0.05)",
                   }}
                 />
+                {stateNameError && (
+                  <FormHelperText sx={{ color: "red" }}>
+                    Please enter a valid state
+                  </FormHelperText>
+                )}
               </FormControl>
             </StackWrapper>
+
             <StackWrapper
               // sx={{ border: "1px solid red" }}
               direction={{ xs: "column", sm: "row" }}
@@ -440,25 +471,27 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   focused
-                  onChange={handleNum}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">+91</InputAdornment>
-                    ),
-                  }}
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
                   sx={{
                     width: "400px",
                     height: "60px",
                     bgcolor: "rgba(23, 70, 162, 0.05)",
                   }}
                 />
-                <Typography sx={{ color: "red" }}> {isError} </Typography>
+                {phoneError && (
+                  <FormHelperText sx={{ color: "red" }}>
+                    Please enter a valid mobile number
+                  </FormHelperText>
+                )}
               </FormControl>
               <FormControl>
                 <FormText>Pin code</FormText>
                 <InputWrapper
                   variant="filled"
                   color="success"
+                  type="pin"
+                  value={pin}
                   onChange={(e) => setPin(e.target.value)}
                   focused
                   sx={{
@@ -467,6 +500,11 @@ const Register = () => {
                     bgcolor: "rgba(23, 70, 162, 0.05)",
                   }}
                 />
+                {pinError && (
+                  <FormHelperText sx={{ color: "red" }}>
+                    Please enter a valid pin
+                  </FormHelperText>
+                )}
               </FormControl>
             </StackWrapper>
             <StackWrapper>
@@ -475,19 +513,24 @@ const Register = () => {
                 <AddressWrapper
                   variant="filled"
                   color="success"
+                  value={address}
                   placeholder="Enter Your Text"
                   inputProps={{
                     sx: {
                       "&::placeholder": {
                         opacity: 1,
                         alignItems: "start",
-                        // otherwise firefox shows a lighter color
                       },
                     },
                   }}
                   onChange={(e) => setAddress(e.target.value)}
                   focused
                 />
+                {addressError && (
+                  <FormHelperText sx={{ color: "red" }}>
+                    Please enter a valid address
+                  </FormHelperText>
+                )}
               </FormControl>
             </StackWrapper>
             <Box
@@ -501,7 +544,7 @@ const Register = () => {
               <ButtonWrapper
                 variant="contained"
                 // onClick={handleOpen}
-                onClick={handleClick}
+                onClick={handleSubmit}
                 sx={{
                   margin: "auto",
                   width: "300px",
