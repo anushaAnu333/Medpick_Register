@@ -475,6 +475,7 @@ const Register = () => {
                   variant="filled"
                   autoComplete="on"
                   color="success"
+                  placeholder="Hospital Name"
                   focused
                   type="text"
                   value={name}
@@ -496,6 +497,7 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   focused
+                  placeholder="City"
                   type="type"
                   value={cityName}
                   onChange={(e) => setCityName(e.target.value)}
@@ -522,14 +524,15 @@ const Register = () => {
                     id="demo-simple-select-label"
                     sx={{
                       marginTop: "2%",
-                      color: "#1746A2",
-                      fontWeight: "400",
+                      color: "#a9a9a9",
+                      opacity: 1,
                     }}>
                     Hospital type
                   </InputLabel>
                   <SelectWrapper
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
+                    placeholder="Hospital Type"
                     sx={{
                       bgcolor: "rgba(23, 70, 162, 0.05)",
                       "& fieldset": { border: "none" },
@@ -565,6 +568,7 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   focused
+                  placeholder="State"
                   value={stateName}
                   type="text"
                   onChange={(e) => setStateName(e.target.value)}
@@ -591,6 +595,7 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   focused
+                  placeholder="Mobile Number"
                   type="tel"
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
@@ -610,6 +615,7 @@ const Register = () => {
                 <InputWrapper
                   variant="filled"
                   color="success"
+                  placeholder="Pin code"
                   type="postal"
                   // inputProps={{
                   //   maxLength: 6,
@@ -637,18 +643,18 @@ const Register = () => {
                   variant="filled"
                   color="success"
                   value={address}
-                  placeholder="Enter Your Text"
+                  placeholder="Address"
                   multiline
                   rowsMax={4}
-                  inputProps={{
-                    sx: {
-                      "&::placeholder": {
-                        opacity: 1,
-                        alignItems: "start",
-                        color: "grey",
-                      },
-                    },
-                  }}
+                  // inputProps={{
+                  //   sx: {
+                  //     "&::placeholder": {
+                  //       opacity: 1,
+                  //       alignItems: "start",
+                  //       color: "grey",
+                  //     },
+                  //   },
+                  // }}
                   onChange={(e) => setAddress(e.target.value)}
                   focused
                 />
